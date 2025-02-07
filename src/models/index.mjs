@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { DB } from '../config/config.mjs';
 
+
 // Inicializa Sequelize con la configuración de MySQL
 const sequelize = new Sequelize(DB.NAME, DB.USER, DB.PASSWORD, {
     host: DB.HOST,

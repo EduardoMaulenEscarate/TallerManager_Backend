@@ -15,7 +15,6 @@ async function registerUser(username, name, lastname, email, password ) {
 
 // Iniciar sesión
 async function loginUser(email, password) {
-
     try {
         const user = await User.findOne({ where: { email } });
         if (!user) return {isValid: false, error: "Usuario no encontrado"};

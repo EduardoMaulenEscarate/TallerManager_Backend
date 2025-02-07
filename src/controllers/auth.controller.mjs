@@ -14,11 +14,12 @@ async function register(req, res, next) {
             return res.json({ status: 'error', message: result.msg, alertType: 'error' });
         }
 
-        
         // Si los datos son válidos, registra al usuario
         const user = await registerUser(username, name, lastname, email, password );
         res.status(201).json({ status: 'success', message: 'Usuario registrado', user, alertType: 'success' });
     } catch (error) {
+        console.log(error);
+        
         next(error);
     }
 }
