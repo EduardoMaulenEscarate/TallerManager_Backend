@@ -35,4 +35,10 @@ const RepuestoOrden = sequelize.define('RepuestoOrden', {
   timestamps: false,
 });
 
+RepuestoOrden.belongsTo(Orden, {foreignKey: 'id_order'});
+Orden.hasMany(RepuestoOrden, {foreignKey: 'id_order'});
+
+RepuestoOrden.belongsTo(Repuesto, {foreignKey: 'id_repuesto'});
+Repuesto.hasMany(RepuestoOrden, {foreignKey: 'id_repuesto'});
+
 export default RepuestoOrden;

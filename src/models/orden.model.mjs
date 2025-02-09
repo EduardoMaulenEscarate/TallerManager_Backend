@@ -50,9 +50,18 @@ const Orden = sequelize.define('Orden', {
       key: 'id',
     }
   }
-},{
+}, {
   tableName: 'ordenes',
   timestamps: true
 });
+
+Orden.belongsTo(User, { foreignKey: 'creado_por', as: 'creador' });
+User.hasMany(Orden, { foreignKey: 'creado_por', as: 'ordenes' });
+
+Orden.belongsTo(AutoCliente, { foreignKey: 'id_auto_cliente', as: 'autoCliente' });
+AutoCliente.hasMany(Orden, { foreignKey: 'id_auto_cliente', as: 'ordenes' });
+
+Orden.belongsTo(EstadoOrden, { foreignKey: 'estado', as: 'estadoOrden' });
+EstadoOrden.hasMany(Orden, { foreignKey: 'estado', as: 'ordenes' });
 
 export default Orden;

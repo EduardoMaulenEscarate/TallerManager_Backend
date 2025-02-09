@@ -29,9 +29,13 @@ const Cliente = sequelize.define("Cliente", {
     }
   }
 },
-{
+  {
     tableName: 'clientes',
     timestamps: true,
-});
+  });
+
+Cliente.belongsTo(User, { foreignKey: 'creado_por', as: 'creador' });
+User.hasMany(Cliente, { foreignKey: 'creado_por', as: 'clientes' });
+
 
 export default Cliente;

@@ -21,4 +21,7 @@ const AutoClienteFoto = sequelize.define('AutoClienteFoto', {
   timestamps: false,
 });
 
+AutoClienteFoto.belongsTo(AutoCliente, {foreignKey: 'id_auto_cliente'});
+AutoCliente.hasMany(AutoClienteFoto, {foreignKey: 'id_auto_cliente'});
+
 export default AutoClienteFoto;

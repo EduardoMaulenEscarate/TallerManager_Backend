@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./index.mjs";
-import Servicio from "./servicio.model.mjs";
 import Orden from "./orden.model.mjs";
+import Servicio from "./servicio.model.mjs";
 
 // Define el modelo de Orden de Servicio
 const OrdenServicio = sequelize.define('Servicio', {
@@ -25,5 +25,11 @@ const OrdenServicio = sequelize.define('Servicio', {
   tableName: 'ordenes_servicios',
   timestamps: true,
 });
+
+OrdenServicio.belongsTo(Orden, {foreignKey: 'id_orden'});
+Orden.hasMany(OrdenServicio, {foreignKey: 'id_orden'});
+
+OrdenServicio.belongsTo(Servicio, {foreignKey: 'id_servicio'});
+Servicio.hasMany(OrdenServicio, {foreignKey: 'id_servicio'});
 
 export default OrdenServicio;

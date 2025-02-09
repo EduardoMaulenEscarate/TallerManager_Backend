@@ -33,10 +33,16 @@ const AutoCliente = sequelize.define('AutoCliente', {
     type: DataTypes.STRING,
     allowNull: true,
   }
-},{
+}, {
   tableName: 'autos_clientes',
   timestamps: false,
 })
+
+AutoCliente.belongsTo(Auto, { foreignKey: 'id_auto', as: 'detalle' });
+Auto.hasMany(AutoCliente, { foreignKey: 'id_auto', as: 'autos' });
+
+AutoCliente.belongsTo(Cliente, { foreignKey: 'id_cliente', as: 'cliente' });
+Cliente.hasMany(AutoCliente, { foreignKey: 'id_cliente', as: 'autos' });
 
 
 export default AutoCliente;

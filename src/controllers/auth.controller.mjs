@@ -1,4 +1,4 @@
-import {registerUser, loginUser, logoutUser} from '../services/auth.service.mjs';
+import {registerUser, loginUser} from '../services/auth.service.mjs';
 import { validateRegisterInput, validateLoginInput } from '../validators/auth.validator.mjs';
 
 async function register(req, res, next) {

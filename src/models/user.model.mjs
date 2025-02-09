@@ -44,4 +44,7 @@ const User = sequelize.define('User', {
     timestamps: true,
 });
 
+User.belongsTo(Tipo, {foreignKey: 'type', as: 'tipoUsuario'});
+Tipo.hasMany(User, {foreignKey: 'type', as: 'usuarios'});
+
 export default User;
