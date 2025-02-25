@@ -6,15 +6,13 @@ import User from '../models/user.model.mjs';
 import Orden from '../models/orden.model.mjs';
 
 // Registrar un cliente
-async function register(req, res, next) {
+async function registerClient(req, res, next) {
     try {
-        const { nombre, telefono, direccion, correo } = req.body;
+        const { nombre, direccion, telefono, correo, vehiculos } = req.body;
         const userId = req.user?.id;
 
-        // valida los datos 
-        const result = await validateRegisterCliente({ nombre, telefono, direccion, correo });
-
-        console.log(result);
+        //valida los datos
+        const result = await validateRegisterCliente(req.body);
 
         if (!result.isValid) {
             return res.json({ status: 'error', message: result.msg, alertType: 'error' });
@@ -22,11 +20,25 @@ async function register(req, res, next) {
 
         // Si los datos son válidos, registra al cliente
         const cliente = await Cliente.create({ nombre, telefono, direccion, correo, creado_por: userId });
-        res.status(201).json({ status: 'success', message: 'Cliente registrado', cliente: cliente, alertType: 'success' });
 
+        if (cliente) {//si el cliente se crea con exito asigna los vehiculos
+            const autosCreados = await Promise.all(
+                vehiculos.map(async (vehiculo) => {
+                    return await AutoCliente.create({
+                        id_auto: vehiculo.modelo,
+                        id_cliente: cliente.id,
+                        patente: vehiculo.patente,
+                        n_chasis: vehiculo.chasis,
+                        color: null,
+                    });
+                })
+            );
+
+            res.status(201).json({ status: 'success', message: 'Cliente registrado con exito', data: { cliente: cliente, vehiculos: autosCreados }, alertType: 'success' });
+        }
     } catch (error) {
         console.log(error);
-        next(error);
+        res.status(500).json({ status: 'error', message: 'Error interno en el servidor', alertType: 'error' });
     }
 }
 
@@ -76,4 +88,4 @@ async function listMechanicClients(req, res, next) {
     }
 }
 
-export { register, listClients, listMechanicClients };
+export { registerClient, listClients, listMechanicClients };

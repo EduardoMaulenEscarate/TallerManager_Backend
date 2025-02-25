@@ -1,7 +1,7 @@
-import {registerUser, loginUser} from '../services/auth.service.mjs';
-import { validateRegisterInput, validateLoginInput } from '../validators/auth.validator.mjs';
+import { loginUser } from '../services/auth.service.mjs';
+import { validateLoginInput } from '../validators/auth.validator.mjs';
 
-async function register(req, res, next) {
+/* async function register(req, res, next) {
     try {
         const { username, email, password, name, lastname } = req.body;
         
@@ -22,7 +22,7 @@ async function register(req, res, next) {
         
         next(error);
     }
-}
+} */
 
 async function login(req, res, next) {
     try {
@@ -30,12 +30,12 @@ async function login(req, res, next) {
         const { email, password } = req.body;
 
         //Validar los datos
-        let result = validateLoginInput({email, password});
+        let result = validateLoginInput({ email, password });
 
         if (!result.isValid) {
             return res.status(200).json({ status: 'error', message: result.msg, alertType: 'error' });
         }
-        
+
         // Loguear al usuario
         const { isValid, user, token } = await loginUser(email, password);
 
@@ -50,7 +50,7 @@ async function login(req, res, next) {
             sameSite: 'Strict',  // Evita envíos desde otros dominios (protección CSRF)
             maxAge: 3600000 // 1 hora
         });
-          
+
         res.status(200).json({ user, token });
 
     } catch (error) {
@@ -69,4 +69,4 @@ const logout = async (req, res) => {
     return res.status(200).json({ status: 'success', message: 'Sesión cerrada', alertType: 'success' });
 }
 
-export  { register, login, logout };
+export { login, logout };

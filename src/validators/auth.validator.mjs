@@ -2,7 +2,7 @@ import User from '../models/user.model.mjs';
 import * as val from '../validators/global.validator.mjs';
 import { Op } from 'sequelize';
 
-export const  validateRegisterInput = async ({username, email, password, name, lastname }) =>  {
+/* export const  validateRegisterInput = async ({username, email, password, name, lastname }) =>  {
   // Valida nombre de usuario, que no esté vacío y largo
   let result = val.emptyField(username, 'Nombre de usuario');
   if (!result.isValid) return result;
@@ -74,9 +74,9 @@ export const  validateRegisterInput = async ({username, email, password, name, l
   
   return result;
 }
+ */
 
-
-export const validateLoginInput = ( {email, password} ) => {
+export const validateLoginInput = ({ email, password }) => {
   // Valida correo electrónico, que no esté vacío, largo y formato
   let result = val.emptyField(email, 'Correo');
   if (!result.isValid) return result;
@@ -90,8 +90,8 @@ export const validateLoginInput = ( {email, password} ) => {
   // Valida contraseña, que no esté vacía, largo y complejidad
   result = val.emptyField(password, 'Contraseña');
   if (!result.isValid) return result;
-  
-  
+
+
   return result;
 }
 

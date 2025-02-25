@@ -48,6 +48,17 @@ export const validateMailFormat = (email) => {
   return { isValid, msg };
 }
 
+export const isNumber = (value, name) => {
+  let isValid = true;
+  let msg = '';
+
+  if (isNaN(value)) {
+    isValid = false;
+    msg = `El campo ${name} debe ser un número`;
+  }
+
+  return { isValid, msg };
+}
 export const executeValidations = (validations) => {
   // Ejecuta validaciones
   for (const { value, method, args, optional } of validations) {

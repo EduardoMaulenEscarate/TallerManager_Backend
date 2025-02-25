@@ -1,7 +1,10 @@
 import * as val from '../validators/global.validator.mjs';
 import Cliente from '../models/cliente.model.mjs';
 
-export const validateRegisterCliente = async ({ nombre, telefono, direccion, correo }) => {
+export const validateRegisterCliente = async ({ nombre, telefono, direccion, correo, vehiculos }) => {
+
+    console.log('Validando cliente:', { nombre, telefono, direccion, correo, vehiculos });
+
     // Lista de validaciones
     const validations = [
         { value: nombre, method: val.emptyField, args: ['Nombre'] },
@@ -14,7 +17,24 @@ export const validateRegisterCliente = async ({ nombre, telefono, direccion, cor
         { value: correo, method: val.validateMailFormat, args: [] }
     ];
 
-    const result = val.executeValidations(validations);
+    let result = val.executeValidations(validations);
+
+    //valida los campos de vehículos
+    for (const { id, marca, modelo, patente, chasis } of vehiculos) {
+        let vehicleValidations = [
+            { value: marca, method: val.emptyField, args: [`Marca de Vehículo ${id + 1}`] },
+            { value: modelo, method: val.emptyField, args: [`Modelo de Vehículo ${id + 1}`] },
+            { value: patente, method: val.emptyField, args: [`Patente de Vehículo ${id + 1}`] },
+            { value: patente, method: val.stringLength, args: [8, 8, `Patente de Vehículo ${id + 1}`] },
+            { value: chasis, method: val.emptyField, args: [`Numero de chasis de Vehículo ${id + 1}`], optional: true },
+            { value: chasis, method: val.stringLength, args: [10, 11, `Numero de chasis de Vehículo ${id + 1}`], optional: true },
+        ]
+
+        result = val.executeValidations(vehicleValidations);
+
+        if (!result.isValid) { break; }
+    }
+
     if (!result.isValid) return result;
 
     try {
@@ -24,11 +44,11 @@ export const validateRegisterCliente = async ({ nombre, telefono, direccion, cor
         // Verifica si el correo ya existe
         const clienteExistente = await Cliente.findOne({ where: { correo: correoNormalizado } });
 
-        if (clienteExistente) return { isValid: false, msg: 'El correo ya está registrado' };
+        if (clienteExistente) return { isValid: false, msg: 'Ya existe un cliente con ese correo' };
 
         return { isValid: true };
     } catch (error) {
-        console.error('Error en validación:', error);
+        console.error('Error en validación formulario cliente:', error);
         return { isValid: false, msg: 'Error interno en la validación del cliente' };
     }
 };

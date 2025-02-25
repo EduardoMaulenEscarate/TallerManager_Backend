@@ -12,16 +12,16 @@ const User = sequelize.define('User', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        references:{
+        references: {
             model: Tipo,
             key: 'id',
         }
     },
-    name:{
+    name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    lastname:{
+    lastname: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -38,13 +38,21 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    address: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    created_by: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
 },
-{
-    tableName: 'users',
-    timestamps: true,
-});
+    {
+        tableName: 'users',
+        timestamps: true,
+    });
 
-User.belongsTo(Tipo, {foreignKey: 'type', as: 'tipoUsuario'});
-Tipo.hasMany(User, {foreignKey: 'type', as: 'usuarios'});
+User.belongsTo(Tipo, { foreignKey: 'type', as: 'tipoUsuario' });
+Tipo.hasMany(User, { foreignKey: 'type', as: 'usuarios' });
 
 export default User;

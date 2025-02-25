@@ -1,10 +1,10 @@
 import { Router } from "express";
 import authenticateToken from "../middlewares/authenticate.mjs";
-import { register, listClients, listMechanicClients } from "../controllers/cliente.controller.mjs";
+import { registerClient, listClients, listMechanicClients } from "../controllers/client.controller.mjs";
 
 const router = Router();
 
-router.get("/agregarCliente", authenticateToken, register);
+router.post("/agregarCliente", authenticateToken, registerClient);
 
 router.get("/editarCliente", authenticateToken, (req, res) => {
   res.send("Editar Cliente");
