@@ -1,21 +1,15 @@
 import { Router } from "express";
 import authenticateToken from "../middlewares/authenticate.mjs";
-import { registerUser } from "../controllers/user.controller..mjs";
+import { registerUser, listUsers, getUserById, updateUser } from "../controllers/user.controller..mjs";
 
 const router = Router();
 
 router.post("/agregarUsuario", authenticateToken, registerUser);
 
-router.get("/editarUsuario", authenticateToken, (req, res) => {
-    res.send("Editar Usuario");
-});
+router.get("/detalle/:id", authenticateToken, getUserById);
 
-router.get("/eliminarUsuario", authenticateToken, (req, res) => {
-    res.send("Eliminar Usuario");
-});
+router.put("/editar", authenticateToken, updateUser);
 
-router.get("/listarUsuario", authenticateToken, (req, res) => {
-    res.send("Listar Usuario");
-});
+router.get("/listarUsuarios", authenticateToken, listUsers);
 
 export default router;

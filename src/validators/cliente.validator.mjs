@@ -25,9 +25,9 @@ export const validateRegisterCliente = async ({ nombre, telefono, direccion, cor
             { value: marca, method: val.emptyField, args: [`Marca de Vehículo ${id + 1}`] },
             { value: modelo, method: val.emptyField, args: [`Modelo de Vehículo ${id + 1}`] },
             { value: patente, method: val.emptyField, args: [`Patente de Vehículo ${id + 1}`] },
-            { value: patente, method: val.stringLength, args: [8, 8, `Patente de Vehículo ${id + 1}`] },
+            { value: patente, method: val.stringLength, args: [6, 8, `Patente de Vehículo ${id + 1}`] },
             { value: chasis, method: val.emptyField, args: [`Numero de chasis de Vehículo ${id + 1}`], optional: true },
-            { value: chasis, method: val.stringLength, args: [10, 11, `Numero de chasis de Vehículo ${id + 1}`], optional: true },
+            { value: chasis, method: val.stringLength, args: [10, 12, `Numero de chasis de Vehículo ${id + 1}`], optional: true },
         ]
 
         result = val.executeValidations(vehicleValidations);
@@ -35,9 +35,8 @@ export const validateRegisterCliente = async ({ nombre, telefono, direccion, cor
         if (!result.isValid) { break; }
     }
 
-    if (!result.isValid) return result;
-
-    try {
+    return result;
+    /* try {
         // Normaliza correo antes de buscar
         const correoNormalizado = correo.trim().toLowerCase();
 
@@ -50,5 +49,5 @@ export const validateRegisterCliente = async ({ nombre, telefono, direccion, cor
     } catch (error) {
         console.error('Error en validación formulario cliente:', error);
         return { isValid: false, msg: 'Error interno en la validación del cliente' };
-    }
+    } */
 };

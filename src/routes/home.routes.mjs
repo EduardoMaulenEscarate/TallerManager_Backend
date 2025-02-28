@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import authenticateToken from '../middlewares/authenticate.mjs';
 
 const router = Router();
@@ -16,9 +16,8 @@ router.get('/contact', (req, res) => {
 });
 
 router.get('/services', authenticateToken, (req, res) => {
-    console.log('Usuario autenticado:', req.user);
     const user = req.user;
-    
+
     res.json({
         id: user.id,
         email: user.email
@@ -26,7 +25,6 @@ router.get('/services', authenticateToken, (req, res) => {
 });
 
 router.get('/profile', authenticateToken, (req, res) => {
-    console.log('Usuario autenticado:', req.user);
     const user = req.user;
     res.json({
         user

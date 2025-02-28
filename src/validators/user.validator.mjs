@@ -25,30 +25,6 @@ const validateUserRegister = async ({ username, firstName, lastName, permission,
 
     const result = val.executeValidations(validations);
 
-    if (!result.isValid) { return result; }
-
-    try {
-        // Normaliza correo y nombre de usuario antes de buscar
-        const emailNormalyzed = email.trim().toLowerCase();
-        const userNameNormalyzed = username.trim().toLowerCase();
-
-        // Verifica si el correo ya existe
-        const userExist = await User.findOne({
-            where: {
-                [Op.or]: [
-                    { email: emailNormalyzed },
-                    { username: userNameNormalyzed }
-                ]
-            }
-        });
-
-        if (userExist) return { isValid: false, msg: 'El correo o nombre de usuario ya está registrado' };
-
-    } catch (error) {
-        console.error('Error en validación:', error);
-        return { isValid: false, msg: 'Error interno en la validación del mecanico' };
-    }
-
     return result;
 }
 
