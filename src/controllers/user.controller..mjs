@@ -6,6 +6,9 @@ import userService from '../services/user.service.mjs';
 
 // Registrar un mecanico
 async function registerUser(req, res) {
+    console.log("pasa por registerUser");//solo para desarrollo
+    console.log("req body ",req.body);//solo para desarrollo
+    
     try {
         const { username, firstName, lastName, permission, phone, email, address } = req.body;
         const logedUser = req.user;

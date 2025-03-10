@@ -203,25 +203,9 @@ async function getClientById(req, res) {
 }
 
 // Listar todos los clientes
-async function listClients(req, res, next) {
+async function listClients({res}) {
     try {
-        const clientes = await Cliente.findAll({
-            include: [
-                { model: User, as: 'creador', attributes: ['name', 'lastname'] },
-                {
-                    model: AutoCliente, as: 'autos'
-                    , include: [
-                        {
-                            model: Auto, as: 'detalle',
-                            include: [
-                                { model: Marca, as: 'marca_auto' }
-                            ]
-                        },
-                        { model: Orden, as: 'ordenes' },
-                    ]
-                }
-            ]
-        });
+        const clientes = await clientService.getAllClientes();
         res.status(200).json({ status: 'success', clientes: clientes });
     } catch (error) {
         next(error);
