@@ -6,7 +6,15 @@ import User from "../models/user.model.mjs";
 import Marca from "../models/marca.model.mjs";
 import { Op } from "sequelize";
 
-async function getAllClientes() {
+/**
+ * @fileoverview Servicios para el modulo de clientes.
+ */
+
+/**
+ * Obtiene la lista de clientes.
+ * @returns {Object} Lista de clientes.
+ * */
+const getAllClientes = async () => {
     return await Cliente.findAll({
         include: [
             { model: User, as: 'creador', attributes: ['name', 'lastname'] },
@@ -26,7 +34,12 @@ async function getAllClientes() {
     });
 }
 
-async function getClienteById(id) {
+/**
+ * Obtiene un cliente por su id.
+ * @param {Number} id Id del cliente.
+ * @returns {Object} Cliente.
+ * */
+const getClienteById = async (id) => {
     return await Cliente.findByPk(id, {
         include: [
             {
@@ -49,6 +62,12 @@ async function getClienteById(id) {
     });
 }
 
+/**
+ * Obtiene un cliente por su número de teléfono o correo.
+ * @param {String} phone Teléfono del cliente.
+ * @param {String} mail Correo del cliente.
+ * @returns {Object} Cliente.
+ * */
 const getClientByPhoneOrMail = async (phone, mail) => {
     return await Cliente.findOne({
         where: {
@@ -57,6 +76,11 @@ const getClientByPhoneOrMail = async (phone, mail) => {
     });
 };
 
+/**
+ * Obtiene un cliente por su correo.
+ * @param {String} mail Correo del cliente.
+ * @returns {Object} Cliente.
+ * */
 const getClientByMail = async (mail) => {
     return await Cliente.findOne({
         where: {
@@ -65,6 +89,11 @@ const getClientByMail = async (mail) => {
     });
 }
 
+/**
+ * Obtiene un cliente por su número de teléfono.
+ * @param {String} phone Teléfono del cliente.
+ * @returns {Object} Cliente.
+ * */
 const getClientByPhone = async (phone) => {
     return await Cliente.findOne({
         where: {

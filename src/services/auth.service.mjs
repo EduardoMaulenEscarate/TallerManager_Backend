@@ -2,11 +2,22 @@ import bcrypt from 'bcryptjs';
 const { hash, compare } = bcrypt; // Desestructura las funciones que necesitas
 import jwt from 'jsonwebtoken';
 const { sign } = jwt; // Desestructuramos la función sign
-
 import User from '../models/user.model.mjs';
 import { JWT } from '../config/config.mjs';
 
-// Registrar un usuario
+/**
+ * @fileoverview Servicios para el modulo de usuarios.
+ */
+
+/**
+ * Hashea la contraña y registra un usuario en la base de datos.
+ * @param {String} username Nombre de usuario (sistema).
+ * @param {String} name Nombre del usuario.
+ * @param {String} lastname Apellido del usuario.
+ * @param {String} email Correo del usuario.
+ * @param {String} password Contraseña del usuario.
+ * @returns {Object} Usuario registrado.
+ */
 async function registerUser(username, name, lastname, email, password) {
     const hashedPassword = await hash(password, 10);
     const user = await User.create({ username, type: 1, email, password: hashedPassword, name, lastname });
@@ -14,7 +25,12 @@ async function registerUser(username, name, lastname, email, password) {
     return user;
 }
 
-// Iniciar sesión
+/**
+ * Inicia sesión.
+ * @param {String} email Correo del usuario.
+ * @param {String} password Contraseña del usuario.
+ * @returns {Object} Usuario y token.
+ */
 async function loginUser(email, password) {
     try {
         const user = await User.findOne({ where: { email }, include: 'tipoUsuario' });
@@ -32,7 +48,9 @@ async function loginUser(email, password) {
     }
 }
 
-// Cerrar sesión
+/**
+ * Cierra la sesión eliminando la cookie.
+ */
 const logoutUser = async (req, res) => {
     // Eliminar la cookie
     res.clearCookie('token', {
@@ -41,4 +59,5 @@ const logoutUser = async (req, res) => {
         samesite: 'Strict'
     })
 };
+
 export { registerUser, loginUser, logoutUser };

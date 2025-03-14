@@ -4,6 +4,14 @@ import Auto from "../models/auto.model.mjs";
 import bcrypt from "bcryptjs";
 const { hash } = bcrypt;
 
+/**
+ * @fileoverview Gestiona las operaciones relacionadas con los autos.
+ */
+
+/**
+ * Obtiene la lista de marcas.
+ * @returns {Object} Lista de marcas.
+ * */
 const listarMarcas = async (req, res) => {
     try {
         const marcas = await Marca.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] }, order: ['nombre'] }); // Espera el resultado de la consulta
@@ -14,6 +22,10 @@ const listarMarcas = async (req, res) => {
     }
 };
 
+/**
+ * Obtiene la lista de autos.
+ * @returns {Object} Lista de autos.
+ * */
 const listarModelos = async (req, res) => {
     try {
         const autos = await Auto.findAll({

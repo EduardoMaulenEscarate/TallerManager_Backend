@@ -6,6 +6,10 @@ import userRoutes from './user.routes.mjs';
 import carRoutes from './car.routes.mjs';
 import formfieldsRoutes from './formFields.routes.mjs';
 import orderRoutes from './order.routes.mjs';
+
+/**
+ * @fileoverview Este módulo gestiona las rutas de la aplicación.
+ */
 const router = Router();
 
 router.use('/', homeRoutes);
@@ -16,7 +20,7 @@ router.use('/auto', carRoutes);
 router.use('/campos', formfieldsRoutes);
 router.use('/order', orderRoutes);
 
-router.use('*', (req, res) => {
+router.use('*', ({res}) => {
     res.status(404).json({ message: 'Ruta no encontrada' });
 });
 

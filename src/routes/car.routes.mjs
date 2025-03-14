@@ -1,5 +1,9 @@
 import { Router } from "express";
 import { listarMarcas, listarModelos, crearUsuario } from "../controllers/car.controller.mjs";
+
+/**
+ * @fileoverview Este módulo gestiona las rutas relacionadas con los autos.
+ */
 const router = Router();
 
 router.get("/marcas", listarMarcas);

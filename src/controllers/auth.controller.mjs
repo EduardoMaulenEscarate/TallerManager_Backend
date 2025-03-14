@@ -1,29 +1,14 @@
 import { loginUser } from '../services/auth.service.mjs';
 import { validateLoginInput } from '../validators/auth.validator.mjs';
 
-/* async function register(req, res, next) {
-    try {
-        const { username, email, password, name, lastname } = req.body;
-        
-        // Validar datos
-        const result = await validateRegisterInput({ username, email, password, name, lastname });
-        
-        console.log(result);
-        
-        if (!result.isValid) {
-            return res.json({ status: 'error', message: result.msg, alertType: 'error' });
-        }
+/**
+ * @fileoverview Gestiona las operaciones relacionadas con la autenticación.
+ */
 
-        // Si los datos son válidos, registra al usuario
-        const user = await registerUser(username, name, lastname, email, password );
-        res.status(201).json({ status: 'success', message: 'Usuario registrado', user, alertType: 'success' });
-    } catch (error) {
-        console.log(error);
-        
-        next(error);
-    }
-} */
-
+/**
+ * Inicia sesión de un usuario.
+ * @returns {Object} Usuario y token.
+ */
 async function login(req, res, next) {
     try {
 
@@ -58,6 +43,10 @@ async function login(req, res, next) {
     }
 }
 
+/**
+ * Cierra la sesión de un usuario.
+ * @returns {Object} Mensaje de éxito.
+ */
 const logout = async (req, res) => {
     // Eliminar la cookie
     res.clearCookie('token', {

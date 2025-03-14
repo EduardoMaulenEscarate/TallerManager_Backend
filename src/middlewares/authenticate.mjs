@@ -2,6 +2,10 @@ import jwt from 'jsonwebtoken';
 const { verify } = jwt; // Extrae 'verify
 import { JWT } from '../config/config.mjs';
 
+/**
+ * Middleware para autenticar las rutas, verifica que el token sea válido.
+ * y agrega el usuario a la petición.
+ */
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token; // Lee el token de la cookie HTTP-only
     console.log(token);

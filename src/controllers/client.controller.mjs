@@ -8,40 +8,42 @@ import Marca from '../models/marca.model.mjs';
 import clientService from '../services/client.service.mjs';
 import vehicleService from '../services/vehicle.service.mjs';
 
-// Registrar un cliente
-async function registerClient(req, res, next) {
+/**
+ * @fileoverview Gestiona las operaciones relacionadas con los clientes.
+ */
+
+/**
+ * Registra un cliente si los datos son válidos.
+ * @returns {Object} Cliente registrado.
+ * */
+const registerClient = async (req, res) => {
     try {
         const { nombre, direccion, telefono, correo, vehiculos } = req.body;
         const userId = req.user?.id;
 
-        //valida los datos
         const result = await validateRegisterCliente(req.body);
 
         if (!result.isValid) {
             return res.json({ status: 'error', message: result.msg, alertType: 'error' });
         }
 
-        // Normaliza correo antes de buscar
         const correoNormalizado = correo.trim().toLowerCase();
 
-        //valida que no haya un cliente con el mismo telefono
         let existingClient = await clientService.getClientByPhone(telefono);
 
         if (existingClient) {
             return res.json({ status: 'error', message: 'Ya existe un cliente con ese telefono', alertType: 'error' });
         }
 
-        //valida que no haya un cliente con el mismo correo
         existingClient = await clientService.getClientByMail(correo);
 
         if (existingClient) {
             return res.json({ status: 'error', message: 'Ya existe un cliente con ese correo', alertType: 'error' });
         }
 
-        // Si los datos son válidos, registra al cliente
         const cliente = await Cliente.create({ nombre, telefono, direccion, correo: correoNormalizado, creado_por: userId });
 
-        if (cliente) {//si el cliente se crea con exito asigna los vehiculos
+        if (cliente) {
             const autosCreados = await Promise.all(
                 vehiculos.map(async (vehiculo) => {
                     return await AutoCliente.create({
@@ -62,42 +64,40 @@ async function registerClient(req, res, next) {
     }
 }
 
+/**
+ * Actualiza la información de un cliente.
+ * @returns {Object} Cliente actualizado.
+ */ 
 const updateClient = async (req, res) => {
     try {
         const { nombre, direccion, telefono, correo, vehiculos, id } = req.body;
         const userId = req.user?.id;
 
-        //valida los datos
         const result = await validateRegisterCliente(req.body);
 
         if (!result.isValid) {
             return res.json({ status: 'error', message: result.msg, alertType: 'error' });
         }
 
-        // Normaliza correo antes de buscar
         const correoNormalizado = correo.trim().toLowerCase();
 
-        // Validar que no haya un cliente con el mismo telefono
         let existingClient = await clientService.getClientByPhone(telefono);
 
         if (existingClient && existingClient.id !== id) {
             return res.json({ status: 'error', message: 'Ya existe un cliente con ese telefono', alertType: 'error' });
         }
 
-        // Validar que no haya un cliente con el mismo correo
         if (correo !== "") {
-            existingClient = await clientService.getClientByMail(correo);
+            existingClient = await clientService.getClientByMail(correoNormalizado);
 
             if (existingClient && existingClient.id !== id) {
                 return res.json({ status: 'error', message: 'Ya existe un cliente con ese correo', alertType: 'error' });
             }
         }
 
-        // Si los datos son válidos, actualiza el cliente
         const cliente = await Cliente.update({ nombre, telefono, direccion, correo, creado_por: userId }, { where: { id: id } });
 
         if (cliente) {
-            // Obtener todos los vehículos actuales del cliente
             const vehiculosActuales = await vehicleService.getClientVehicles(id);
 
             // Crear un conjunto de IDs de vehículos enviados para búsqueda rápida
@@ -154,7 +154,11 @@ const updateClient = async (req, res) => {
     }
 }
 
-async function getClientById(req, res) {
+/**
+ * Obtiene un cliente por su ID.
+ * @returns {Object} Cliente encontrado.
+ **/
+const getClientById = async (req, res) => {
     try {
         const { id } = req.params;
         console.log(id);
@@ -202,8 +206,11 @@ async function getClientById(req, res) {
     }
 }
 
-// Listar todos los clientes
-async function listClients({res}) {
+/**
+ * Devuelve la lista de todos los clientes.
+ * @returns {Object} Lista de clientes.
+ * */
+const listClients = async ({res, req, next}) => {
     try {
         const clientes = await clientService.getAllClientes();
         res.status(200).json({ status: 'success', clientes: clientes });
@@ -212,8 +219,11 @@ async function listClients({res}) {
     }
 }
 
-// Listar todos los clientes de un mecanico
-async function listMechanicClients(req, res, next) {
+/**
+ * Obtiene los clientes asignados a un mecánico.
+ * @returns {Object} Lista de clientes del mecánico.
+ * */
+const listMechanicClients = async (req, res, next) => {
     try {
         const mechanicId = req.body.mecanico;
         const clientes = await Cliente.findAll({

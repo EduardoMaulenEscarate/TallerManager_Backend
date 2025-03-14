@@ -1,6 +1,20 @@
 import * as val from '../validators/global.validator.mjs';
 import Cliente from '../models/cliente.model.mjs';
 
+/**
+ * @fileoverview Validaciones para el modulo de clientes.
+ */
+
+/**
+ * Crear arreglo de validaciones para el registro de un cliente, y las ejecuta.
+ * @param {Object} cliente Datos del cliente.
+ * @param {String} cliente.nombre Nombre del cliente.
+ * @param {String} cliente.telefono Teléfono del cliente.
+ * @param {String} cliente.direccion Dirección del cliente.
+ * @param {String} cliente.correo Correo del cliente.
+ * @param {Array} cliente.vehiculos Lista de vehículos del cliente.
+ * @returns {Object} Resultado de la validación.
+ * */
 export const validateRegisterCliente = async ({ nombre, telefono, direccion, correo, vehiculos }) => {
 
     console.log('Validando cliente:', { nombre, telefono, direccion, correo, vehiculos });
@@ -36,18 +50,4 @@ export const validateRegisterCliente = async ({ nombre, telefono, direccion, cor
     }
 
     return result;
-    /* try {
-        // Normaliza correo antes de buscar
-        const correoNormalizado = correo.trim().toLowerCase();
-
-        // Verifica si el correo ya existe
-        const clienteExistente = await Cliente.findOne({ where: { correo: correoNormalizado } });
-
-        if (clienteExistente) return { isValid: false, msg: 'Ya existe un cliente con ese correo' };
-
-        return { isValid: true };
-    } catch (error) {
-        console.error('Error en validación formulario cliente:', error);
-        return { isValid: false, msg: 'Error interno en la validación del cliente' };
-    } */
 };

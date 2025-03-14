@@ -1,4 +1,14 @@
-export const emptyField = (value, name) => {
+/** 
+ * @fileoverview Validaciones globales.
+ */
+
+/**
+ * Valida si un campo está vacío.
+ * @param {String} value Valor del campo.
+ * @param {String} name Nombre del campo.
+ * @returns {Object} Resultado de la validación.
+ */
+const emptyField = (value, name) => {
   let isValid = true;
   let msg = '';
 
@@ -10,6 +20,14 @@ export const emptyField = (value, name) => {
   return { isValid, msg };
 }
 
+/**
+ * Valida la longitud de un campo.
+ * @param {String} value Valor del campo.
+ * @param {Number} min Longitud mínima.
+ * @param {Number} max Longitud máxima.
+ * @param {String} name Nombre del campo.
+ * @returns {Object} Resultado de la validación.
+ */
 export const stringLength = (value, min, max, name) => {
   let isValid = true;
   let msg = '';
@@ -22,6 +40,11 @@ export const stringLength = (value, min, max, name) => {
   return { isValid, msg };
 }
 
+/**
+ * Valida la fortaleza de una contraseña.
+ * @param {String} password Contraseña.
+ * @returns {Object} Resultado de la validación.
+ */
 export const validatePasswordStrength = (password) => {
   const re = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
   let isValid = true;
@@ -35,6 +58,11 @@ export const validatePasswordStrength = (password) => {
   return { isValid, msg };
 };
 
+/**
+ * Valida el formato de un correo electrónico.
+ * @param {String} email Correo electrónico.
+ * @returns {Object} Resultado de la validación.
+ */
 export const validateMailFormat = (email) => {
   const re = /\S+@\S+\.\S+/;
   let isValid = true;
@@ -48,6 +76,12 @@ export const validateMailFormat = (email) => {
   return { isValid, msg };
 }
 
+/**
+ * Valida si un campo es un número.
+ * @param {String} value Valor del campo.
+ * @param {String} name Nombre del campo.
+ * @returns {Object} Resultado de la validación.
+ */
 export const isNumber = (value, name) => {
   let isValid = true;
   let msg = '';
@@ -59,6 +93,12 @@ export const isNumber = (value, name) => {
 
   return { isValid, msg };
 }
+
+/**
+ * Ejecuta validaciones.
+ * @param {Array} validations Lista de validaciones.
+ * @returns {Object} Resultado de la validación.
+ */
 export const executeValidations = (validations) => {
   // Ejecuta validaciones
   for (const { value, method, args, optional } of validations) {

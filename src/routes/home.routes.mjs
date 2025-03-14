@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import authenticateToken from '../middlewares/authenticate.mjs';
 
+/**
+ * @fileoverview Este módulo gestiona las rutas que no requiere autenticación.
+ * ⚠️ Es solo un módulo de ejemplo.
+*/
+
 const router = Router();
 
 router.get('/', (req, res) => {

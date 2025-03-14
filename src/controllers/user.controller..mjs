@@ -4,11 +4,15 @@ import bcrypt from "bcryptjs";
 const { hash } = bcrypt;
 import userService from '../services/user.service.mjs';
 
-// Registrar un mecanico
-async function registerUser(req, res) {
-    console.log("pasa por registerUser");//solo para desarrollo
-    console.log("req body ",req.body);//solo para desarrollo
-    
+/**
+ * @fileoverview Gestiona las operaciones relacionadas con los usuarios.
+ */
+
+/**
+ * Registra un usuario si los datos son válidos.
+ * @returns {Object} Usuario registrado.
+ * */
+const registerUser = async (req, res) => {
     try {
         const { username, firstName, lastName, permission, phone, email, address } = req.body;
         const logedUser = req.user;
@@ -44,7 +48,11 @@ async function registerUser(req, res) {
     }
 }
 
-async function listUsers(req, res) {
+/**
+ * Obtiene la lista de usuarios.
+ * @returns {Object} Lista de usuarios.
+ * */
+const listUsers = async (req, res) => {
     try {
         const users = await userService.getAllUsers();
         res.status(200).json({ status: 'success', usuarios: users });
@@ -53,7 +61,11 @@ async function listUsers(req, res) {
     }
 }
 
-async function getUserById(req, res) {
+/**
+ * Obtiene un usuario por su id.
+ * @returns {Object} Usuario.
+ * */
+const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
         const user = await userService.getUserById(id);
@@ -63,7 +75,11 @@ async function getUserById(req, res) {
     }
 }
 
-async function updateUser(req, res) {
+/**
+ * Actualiza un usuario.
+ * @returns {Object} Usuario actualizado.
+ * */
+const updateUser = async (req, res) => {
     const { id, username, firstName, lastName, permission, phone, email, address } = req.body;
     const logedUser = req.user;
 
@@ -84,4 +100,5 @@ async function updateUser(req, res) {
     }
 
 }
+
 export { registerUser, listUsers, getUserById, updateUser };
