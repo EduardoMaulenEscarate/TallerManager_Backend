@@ -15,8 +15,8 @@ app.use(cors({
 }));
 
 
-app.use(json());
-
 app.use('/api', router);
+app.use(json());
+app.use(express.urlencoded({ extended: true }));
 
 export default app;

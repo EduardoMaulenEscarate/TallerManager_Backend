@@ -18,7 +18,7 @@ router.use('/cliente', clienteRoutes);
 router.use('/usuario', userRoutes);
 router.use('/auto', carRoutes);
 router.use('/campos', formfieldsRoutes);
-router.use('/order', orderRoutes);
+router.use('/orden', orderRoutes);
 
 router.use('*', ({res}) => {
     res.status(404).json({ message: 'Ruta no encontrada' });

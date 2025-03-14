@@ -27,18 +27,22 @@ const registerClient = async (req, res) => {
             return res.json({ status: 'error', message: result.msg, alertType: 'error' });
         }
 
-        const correoNormalizado = correo.trim().toLowerCase();
-
         let existingClient = await clientService.getClientByPhone(telefono);
 
         if (existingClient) {
             return res.json({ status: 'error', message: 'Ya existe un cliente con ese telefono', alertType: 'error' });
         }
 
-        existingClient = await clientService.getClientByMail(correo);
-
-        if (existingClient) {
-            return res.json({ status: 'error', message: 'Ya existe un cliente con ese correo', alertType: 'error' });
+        const correoNormalizado = correo.trim().toLowerCase();
+        
+        if (correo !== "") {
+            existingClient = await clientService.getClientByMail(correoNormalizado);
+    
+            console.log('Cliente existente:', existingClient);
+            
+            if (existingClient) {
+                return res.json({ status: 'error', message: 'Ya existe un cliente con ese correo', alertType: 'error' });
+            }
         }
 
         const cliente = await Cliente.create({ nombre, telefono, direccion, correo: correoNormalizado, creado_por: userId });

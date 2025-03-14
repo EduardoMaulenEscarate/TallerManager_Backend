@@ -8,7 +8,7 @@
  * @param {String} name Nombre del campo.
  * @returns {Object} Resultado de la validación.
  */
-const emptyField = (value, name) => {
+export const emptyField = (value, name) => {
   let isValid = true;
   let msg = '';
 

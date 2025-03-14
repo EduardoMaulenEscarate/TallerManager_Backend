@@ -84,7 +84,10 @@ const getClientByPhoneOrMail = async (phone, mail) => {
 const getClientByMail = async (mail) => {
     return await Cliente.findOne({
         where: {
-            correo: mail
+            correo: mail,
+            correo: {
+                [Op.not]: null
+            }
         }
     });
 }
