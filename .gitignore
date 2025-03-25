@@ -11,3 +11,4 @@ logs/
 
 # Imagenes subidas
 public/uploads/
+public/*
