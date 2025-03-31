@@ -1,5 +1,8 @@
 import { Router } from "express";
 import { upload } from "../middlewares/upload.mjs";
+import authenticateToken from "../middlewares/authenticate.mjs";
+import { validateOrderForm } from "../middlewares/validations/order.validation.mjs";
+import { normalizer } from "../middlewares/normalizer.mjs";
 import { registerOrder } from "../controllers/order.controller.mjs";
 /**
  * @fileoverview Este módulo gestiona las rutas relacionadas con las ordenes.
@@ -7,8 +10,16 @@ import { registerOrder } from "../controllers/order.controller.mjs";
 
 const router = Router();
 
-// router.post('/agregarOrden', upload.array("photos", 10),  uploadFiles);
-router.post('/agregarOrden', upload.array('photos'), registerOrder);
+router.post('/', 
+    authenticateToken,
+    normalizer(["spareParts", "spareParts_prices", "quantitys", "services", "services_prices"]), 
+    validateOrderForm, 
+    upload.array('photos'), 
+    registerOrder);
+
+router.put('/orden/:id', upload.array('photos'), registerOrder);
+router.delete('/orden/:id', registerOrder);
+router.get('/orden/:id', registerOrder);
 
 async function test(req, res) {
     console.log(req.body);

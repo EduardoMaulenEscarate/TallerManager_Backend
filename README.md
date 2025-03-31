@@ -27,13 +27,13 @@ TallerManager API es el backend desarrollado en Node.js y Express que gestiona l
 ### Configurar las variables de entorno:
 Crear un archivo .env en la raíz del backend con el siguiente contenido:
     
-    PORT=3000
+    PORT=[tu puerto]
     DATABASE_HOST=mysql
-    DATABASE_USER=root
-    DATABASE_PASSWORD=root
+    DATABASE_USER=[tu usuario]
+    DATABASE_PASSWORD=[tu contraseña]
     DATABASE_NAME=tallerManager
     
-    JWT_SECRET=clave_secreta_super_segura
+    JWT_SECRET=[Tu secret para JWT]
     JWT_EXPIRES_IN=1h
 
 ### Iniciar el servidor en desarrollo:

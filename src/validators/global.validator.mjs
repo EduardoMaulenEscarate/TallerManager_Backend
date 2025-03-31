@@ -21,6 +21,25 @@ export const emptyField = (value, name) => {
 }
 
 /**
+ * Valida que un arreglo tenga una longitud mínima.
+ * @param {Array} value Arreglo a validar.
+ * @param {Number} min Longitud mínima.
+ * @param {String} name Nombre del campo.
+ * @returns {Object} Resultado de la validación.
+ * */
+export const arrayLength = (value, min, name) => {
+  let isValid = true;
+  let msg = '';
+
+  if (value.length < min) {
+    isValid = false;
+    msg = `El campo ${name} debe tener al menos ${min} elementos`;
+  }
+
+  return { isValid, msg };
+}
+
+/**
  * Valida la longitud de un campo.
  * @param {String} value Valor del campo.
  * @param {Number} min Longitud mínima.
