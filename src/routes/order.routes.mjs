@@ -11,7 +11,7 @@ import { registerOrder } from "../controllers/order.controller.mjs";
 const router = Router();
 
 router.post('/', 
-    authenticateToken,
+    // authenticateToken,
     normalizer(["spareParts", "spareParts_prices", "quantitys", "services", "services_prices"]), 
     validateOrderForm, 
     upload.array('photos'), 

@@ -22,7 +22,10 @@ import * as val from '../../validators/global.validator.mjs';
  *  * */
 const validateOrderForm = async (req, res, next) => {
     const { vehicle, priority, kilometraje, 
-            estimatedDelivery, spareParts, spareParts_prices, quantitys, services, services_prices, state, observations} = req.body; 
+            estimatedDelivery,
+            admissionReason, diagnosis, 
+            spareParts, spareParts_prices, quantitys, 
+            services, services_prices, state, observations} = req.body; 
 
     const validations = [
         { value: vehicle, method: val.emptyField, args: ['Vehículo'], optional: false },
@@ -31,6 +34,10 @@ const validateOrderForm = async (req, res, next) => {
         { value: priority, method: val.isNumber, args: ['Prioridad'], optional: false },
         { value: kilometraje, method: val.emptyField, args: ['Kilometraje'], optional: true },
         { value: kilometraje, method: val.isNumber, args: ['Kilometraje'], optional: true },
+        { value: admissionReason, method: val.emptyField, args: ['Motivo de ingreso'], optional: true },
+        { value: admissionReason, method: val.stringLength, args: [10, 400, 'Motivo de ingreso'], optional: true },
+        { value: diagnosis, method: val.emptyField, args: ['Diagnóstico'], optional: true },
+        { value: diagnosis, method: val.stringLength, args: [10, 400, 'Diagnóstico'], optional: true },
         { value: estimatedDelivery, method: val.emptyField, args: ['Fecha de entrega estimada'], optional: false },
         { value: state, method: val.emptyField, args: ['Estado'], optional: false },
         { value: state, method: val.isNumber, args: ['Estado'], optional: false },
