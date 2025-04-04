@@ -87,4 +87,14 @@ const registerOrder = async (req, res) => {
     }    
 };
 
-export { registerOrder };
+const getAllOrders = async (req, res) => {
+    try {
+        const orders = await service.getAllOrders(req.user);
+        res.status(200).json({ status: 'success', message: 'Ordenes obtenidas exitosamente', orders });
+    } catch (error) {
+        console.error('Error en getAllOrders:', error);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export { registerOrder,getAllOrders };

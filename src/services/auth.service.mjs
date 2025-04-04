@@ -39,7 +39,7 @@ async function loginUser(email, password) {
         const isPasswordValid = await compare(password, user.password);
         if (!isPasswordValid) return { isValid: false, error: "Contraseña incorrecta" };
 
-        const token = sign({ id: user.id, username: user.username, email: user.email, name: user.name, lastname: user.lastname }, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN });
+        const token = sign({ id: user.id, username: user.username, email: user.email, name: user.name, lastname: user.lastname, id_type: user.type, type: user.tipoUsuario.tipo  }, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN });
 
         return { isValid: true, user, token };
 

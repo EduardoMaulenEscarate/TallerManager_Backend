@@ -3,7 +3,15 @@ import OrdenServicio from "../models/ordenServicio.model.mjs";
 import OrdenRepuesto from "../models/ordenRepuesto.model.mjs";
 import OrdenFoto from "../models/ordenFoto.model.mjs";
 import Observacion from "../models/ordenObservacion.model.mjs";
+import AutoCliente from "../models/autoCliente.model.mjs";
+import Cliente from "../models/cliente.model.mjs";
+import Repuesto from "../models/repuesto.model.mjs";
+import Auto from "../models/auto.model.mjs";
+import Marca from "../models/marca.model.mjs";
 import { Op } from "sequelize";
+import Servicio from "../models/servicio.model.mjs";
+import Prioridad from "../models/prioridad.model.mjs";
+import EstadoOrden from "../models/estadoOrden.model.mjs";
 
 /**
  * @fileoverview Servicios para el modulo de ordenes
@@ -97,17 +105,61 @@ const registerOrderPhoto = async (photo, id_orden) => {
 /**
  * Obtiene todas las ordenes de la base de datos
  * @returns {Array} Lista de ordenes
+ * @param {Object} user - El usuario autenticado.
  * */
-const getAllOrders = async () => {
-    return Orden.findAll({
-        include: [
-            { model: OrdenServicio, as: 'servicios' },
-            { model: OrdenRepuesto, as: 'repuestos' },
-            { model: Observacion, as: 'observaciones' },
-            { model: OrdenFoto, as: 'fotos' },
-            
-        ]
-    });
+const getAllOrders = async (user) => {
+    try {
+        // Si el usuarios es un administrador, se obtienen todas las ordenes
+        if (user.type == 'Administrador' || user.type == '1') {
+            return Orden.findAll({
+                include: [
+                    { model: AutoCliente, as: 'autoCliente', 
+                        include: [
+                            { model: Cliente, as: 'cliente' },
+                            { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
+                        ] },
+                    { model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }] 
+                    },
+                    { model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    },
+                    { model: Observacion, as: 'observaciones' },
+                    { model: OrdenFoto, as: 'fotos' },
+                    { model: Prioridad, as: 'prioridad_orden' },
+                    { model: EstadoOrden, as: 'estadoOrden' },
+                ],
+                order: [['fecha_ingreso', 'DESC']]
+            });
+        }else if (user.type == 'Mecánico' || user.type == '2') {
+            // Si el usuario es un mecanico, se obtienen las ordenes asignadas a el
+            return Orden.findAll({
+                where: {
+                    creado_por: user.id
+                },
+                include: [
+                    { model: AutoCliente, as: 'autoCliente', 
+                        include: [
+                            { model: Cliente, as: 'cliente' },
+                            { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
+                        ] },
+                    { model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }] 
+                    },
+                    { model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    },
+                    { model: Observacion, as: 'observaciones' },
+                    { model: OrdenFoto, as: 'fotos' },
+                    { model: Prioridad, as: 'prioridad_orden' },
+                    { model: EstadoOrden, as: 'estadoOrden' },
+                ],
+                order: [['fecha_ingreso', 'DESC']]
+            });
+        }
+    } catch (error) {
+        throw new Error("No tienes permisos para ver las ordenes" + error.message);
+    }
 }
 
 export default { registerOrder, registerOrderSpareParts, registerOrderService, registerOrderObservation, registerOrderPhoto, getAllOrders };

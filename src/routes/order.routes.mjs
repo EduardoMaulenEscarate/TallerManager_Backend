@@ -3,7 +3,7 @@ import { upload } from "../middlewares/upload.mjs";
 import authenticateToken from "../middlewares/authenticate.mjs";
 import { validateOrderForm } from "../middlewares/validations/order.validation.mjs";
 import { normalizer } from "../middlewares/normalizer.mjs";
-import { registerOrder } from "../controllers/order.controller.mjs";
+import { registerOrder, getAllOrders } from "../controllers/order.controller.mjs";
 /**
  * @fileoverview Este módulo gestiona las rutas relacionadas con las ordenes.
  */
@@ -17,6 +17,7 @@ router.post('/',
     validateOrderForm, 
     registerOrder);
 
+router.get('/', authenticateToken, getAllOrders);
 // router.put('/:id', upload.array('photos'), registerOrder);
 // router.delete('/:id', registerOrder);
 // router.get('/:id', registerOrder);

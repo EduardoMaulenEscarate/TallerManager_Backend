@@ -8,7 +8,6 @@ import { JWT } from '../config/config.mjs';
  */
 const authenticateToken = (req, res, next) => {
     const token = req.cookies.token; // Lee el token de la cookie HTTP-only
-    console.log(token);
     
     if (!token) return res.status(401).json({ login: false, error: 'Token no proporcionado' });
 
@@ -22,7 +21,6 @@ const authenticateToken = (req, res, next) => {
                     : 'Token inválido' 
             });
         }
-        console.log(user);
         
         req.user = user;
         next();
