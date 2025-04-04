@@ -12,6 +12,8 @@ import { Op } from "sequelize";
 import Servicio from "../models/servicio.model.mjs";
 import Prioridad from "../models/prioridad.model.mjs";
 import EstadoOrden from "../models/estadoOrden.model.mjs";
+import fs from 'fs';
+import path from 'path';
 
 /**
  * @fileoverview Servicios para el modulo de ordenes
@@ -110,7 +112,7 @@ const registerOrderPhoto = async (photo, id_orden) => {
 const getAllOrders = async (user) => {
     try {
         // Si el usuarios es un administrador, se obtienen todas las ordenes
-        if (user.type == 'Administrador' || user.type == '1') {
+        if (user.type == 'Administrador' || user.id_type == '1') {
             return Orden.findAll({
                 include: [
                     { model: AutoCliente, as: 'autoCliente', 
@@ -131,7 +133,7 @@ const getAllOrders = async (user) => {
                 ],
                 order: [['fecha_ingreso', 'DESC']]
             });
-        }else if (user.type == 'Mecánico' || user.type == '2') {
+        }else if (user.type == 'Mecánico' || user.id_type == '2') {
             // Si el usuario es un mecanico, se obtienen las ordenes asignadas a el
             return Orden.findAll({
                 where: {
@@ -162,4 +164,100 @@ const getAllOrders = async (user) => {
     }
 }
 
-export default { registerOrder, registerOrderSpareParts, registerOrderService, registerOrderObservation, registerOrderPhoto, getAllOrders };
+/**
+ * Obtiene una orden por su ID desde la base de datos.
+ * @param {number} id - El ID de la orden a buscar.
+ */
+const getOrderById = async (id, user) => {
+    console.log(user);
+    
+    try {
+        // Si el usuarios es un administrador, puede ver cualquier orden
+        if (user.type == 'Administrador' || user.id_type == '1') {
+            return Orden.findOne({
+                where: {
+                    id: id
+                },
+                include: [
+                    { model: AutoCliente, as: 'autoCliente', 
+                        include: [
+                            { model: Cliente, as: 'cliente' },
+                            { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
+                        ] },
+                    { model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }] 
+                    },
+                    { model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    },
+                    { model: Observacion, as: 'observaciones' },
+                    { model: OrdenFoto, as: 'fotos' },
+                    { model: Prioridad, as: 'prioridad_orden' },
+                    { model: EstadoOrden, as: 'estadoOrden' },
+                ]
+            });
+        }else if (user.type == 'Mecánico' || user.id_type == '2') {
+            // Si el usuario es un mecanico, se obtienen la ordenen solo si está asignada a el
+            return Orden.findOne({
+                where: {
+                    id: id,
+                    creado_por: user.id
+                },
+                include: [
+                    { model: AutoCliente, as: 'autoCliente', 
+                        include: [
+                            { model: Cliente, as: 'cliente' },
+                            { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
+                        ] },
+                    { model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }] 
+                    },
+                    { model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    },
+                    { model: Observacion, as: 'observaciones' },
+                    { model: OrdenFoto, as: 'fotos' },
+                    { model: Prioridad, as: 'prioridad_orden' },
+                    { model: EstadoOrden, as: 'estadoOrden' },
+                ]
+            });
+        }
+    } catch (error) {
+        throw new Error("No tienes permisos para ver la orden" + error.message);
+    }
+}
+
+const getOrderPhotos = async (photosPaths) => {
+    // Trae fotos desde public/uploads/order
+    console.log(photosPaths);
+    if (!photosPaths || photosPaths.length === 0) {
+        return [];
+    }
+
+    // Verificación de tipos
+    photosPaths.map(photo => {
+        console.log('path', photo, typeof photo); // Verifica el tipo
+    });
+
+    const baseUrl = 'http://localhost:3000/uploads/order/';
+    const photos = photosPaths
+        .map(photo => ({
+            path: photo, // Path en la BD
+            url: `${baseUrl}${path.basename(photo)}` // Construir URL accesible
+        }))
+        .filter(photo => fs.existsSync(`public/uploads/order/${path.basename(photo.path)}`)); // Accede correctamente a 'path'
+
+    return photos;
+};
+
+
+export default { 
+    registerOrder, 
+    registerOrderSpareParts, 
+    registerOrderService, 
+    registerOrderObservation, 
+    registerOrderPhoto, 
+    getAllOrders, 
+    getOrderById, 
+    getOrderPhotos 
+};

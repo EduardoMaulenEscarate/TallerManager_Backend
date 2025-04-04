@@ -87,6 +87,13 @@ const registerOrder = async (req, res) => {
     }    
 };
 
+
+/**
+ * Obtiene todas las órdenes asociadas al usuario autenticado.
+ * 
+ * @param {Object} req.user - Información del usuario autenticado.
+ * @throws {Error} Responde con un código de estado 500 y un mensaje de error en caso de fallo.
+ */
 const getAllOrders = async (req, res) => {
     try {
         const orders = await service.getAllOrders(req.user);
@@ -97,4 +104,41 @@ const getAllOrders = async (req, res) => {
     }
 }
 
-export { registerOrder,getAllOrders };
+
+/**
+ * Obtiene una orden específica basada en el ID proporcionado en los parámetros de la solicitud.
+ * 
+ * @param {string} req.params.id - ID de la orden a obtener.
+ * @returns {void} Envía una respuesta JSON con el estado y los datos de la orden, 
+ * o un mensaje de error en caso de fallo.
+ * @throws {Error} Devuelve un error 500 si ocurre un problema al obtener la orden.
+ */
+const getOrder = async (req, res) => {
+    try {
+        console.log('ID de la orden:', req.params.id);
+        console.log('Usuario:', req.user);
+        
+        
+        console.log(req.params.id);
+        const order = await service.getOrderById(req.params.id, req.user);
+
+        if (order) {
+            // Obtener las fotos asociadas a la orden
+            const photos = await service.getOrderPhotos(order.fotos.map(photo => photo.url));
+
+            return res.status(200).json({ 
+                status: 'success', 
+                message: 'Orden obtenida exitosamente', 
+                order, 
+                photos 
+            });
+        }else{
+            return res.status(404).json({ status: 'error', message: 'Orden no encontrada' });
+        }
+    } catch (error) {
+        console.error('Error en getOrder:', error);
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export { registerOrder,getAllOrders, getOrder };
