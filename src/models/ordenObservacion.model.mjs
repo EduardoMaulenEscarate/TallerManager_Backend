@@ -21,7 +21,7 @@ const Observacion = sequelize.define('Observacion', {
   timestamps: true
 });
 
-Observacion.belongsTo(Orden, {foreignKey: 'id_orden'});
-Orden.hasMany(Observacion, {foreignKey: 'id_orden'});
+Observacion.belongsTo(Orden, {foreignKey: 'id_orden', as: 'orden'});
+Orden.hasMany(Observacion, {foreignKey: 'id_orden', as: 'observaciones'});
 
 export default Observacion;

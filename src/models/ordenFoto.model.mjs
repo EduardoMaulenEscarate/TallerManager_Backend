@@ -21,7 +21,7 @@ const OrdenFoto = sequelize.define('OrdenFoto', {
   key: 'id',
 });
 
-OrdenFoto.belongsTo(Orden, {foreignKey: 'id_orden'});
-Orden.hasMany(OrdenFoto, {foreignKey: 'id_orden'});
+OrdenFoto.belongsTo(Orden, {foreignKey: 'id_orden', as: 'orden'});
+Orden.hasMany(OrdenFoto, {foreignKey: 'id_orden', as: 'fotos'});
 
 export default OrdenFoto;

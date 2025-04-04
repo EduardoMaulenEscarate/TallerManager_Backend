@@ -3,8 +3,8 @@ import sequelize from "./index.mjs";
 import Repuesto from "./repuesto.model.mjs";
 import Orden from "./orden.model.mjs";
 
-// Define el modelo de RepuestoOrden
-const RepuestoOrden = sequelize.define('RepuestoOrden', {
+// Define el modelo de OrdenRepuesto
+const OrdenRepuesto = sequelize.define('OrdeRepuesto', {
   id_order: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -31,14 +31,14 @@ const RepuestoOrden = sequelize.define('RepuestoOrden', {
     defaultValue: 0,
   }
 },{
-  tableName: 'repuestos_ordenes',
+  tableName: 'ordenes_repuestos',
   timestamps: false,
 });
 
-RepuestoOrden.belongsTo(Orden, {foreignKey: 'id_order'});
-Orden.hasMany(RepuestoOrden, {foreignKey: 'id_order'});
+OrdenRepuesto.belongsTo(Orden, {foreignKey: 'id_order', as: 'orden'});
+Orden.hasMany(OrdenRepuesto, {foreignKey: 'id_order', as: 'repuestos'});
 
-RepuestoOrden.belongsTo(Repuesto, {foreignKey: 'id_repuesto'});
-Repuesto.hasMany(RepuestoOrden, {foreignKey: 'id_repuesto'});
+OrdenRepuesto.belongsTo(Repuesto, {foreignKey: 'id_repuesto', as: 'repuesto'});
+Repuesto.hasMany(OrdenRepuesto, {foreignKey: 'id_repuesto', as : 'ordenesRepuestos'});
 
-export default RepuestoOrden;
+export default OrdenRepuesto;

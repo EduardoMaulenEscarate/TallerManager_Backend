@@ -11,24 +11,14 @@ import { registerOrder } from "../controllers/order.controller.mjs";
 const router = Router();
 
 router.post('/', 
-    // authenticateToken,
+    authenticateToken,
+    upload.array('photos'), 
     normalizer(["spareParts", "spareParts_prices", "quantitys", "services", "services_prices"]), 
     validateOrderForm, 
-    upload.array('photos'), 
     registerOrder);
 
-router.put('/orden/:id', upload.array('photos'), registerOrder);
-router.delete('/orden/:id', registerOrder);
-router.get('/orden/:id', registerOrder);
-
-async function test(req, res) {
-    console.log(req.body);
-    
-    console.log("Hello, World!");
-
-    res.status(200).json({ message: 'Hello, World!' });
-}
-
-
+// router.put('/:id', upload.array('photos'), registerOrder);
+// router.delete('/:id', registerOrder);
+// router.get('/:id', registerOrder);
 
 export default router;

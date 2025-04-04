@@ -27,6 +27,22 @@ const validateOrderForm = async (req, res, next) => {
             spareParts, spareParts_prices, quantitys, 
             services, services_prices, state, observations} = req.body; 
 
+            console.log(
+                'vehicle:', vehicle, 
+                'priority:', priority, 
+                'kilometraje:', kilometraje, 
+                'estimatedDelivery:', estimatedDelivery,
+                'admissionReason:', admissionReason, 
+                'diagnosis:', diagnosis, 
+                'spareParts:', spareParts, 
+                'spareParts_prices:', spareParts_prices, 
+                'quantitys:', quantitys, 
+                'services:', services, 
+                'services_prices:', services_prices, 
+                'state:', state, 
+                'observations:', observations
+            );
+            
     const validations = [
         { value: vehicle, method: val.emptyField, args: ['Vehículo'], optional: false },
         { value: vehicle, method: val.isNumber, args: ['Vehículo'], optional: false },
