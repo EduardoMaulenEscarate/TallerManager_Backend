@@ -19,7 +19,7 @@ import { Op } from "sequelize";
  * @param {Number} idUser Id del usuario que registra la orden
  * */
 const registerOrder = async ({ vehicle, kilometraje, admissionReason, diagnosis,  estimatedDelivery, priority, state}, idUser) => {
-    return await Orden.create({
+    return Orden.create({
         creado_por: idUser,
         id_auto_cliente: vehicle,
         numero_orden: 0,
@@ -42,7 +42,7 @@ const registerOrder = async ({ vehicle, kilometraje, admissionReason, diagnosis,
  * @param {Number} sparePartsData.price Precio del repuesto
  * */
 const registerOrderSpareParts = async(sparePartData, id_orden) => {
-    return await OrdenRepuesto.create({
+    return OrdenRepuesto.create({
         id_order: id_orden,
         id_repuesto: sparePartData.id_sparePart,
         cantidad: sparePartData.quantity,
@@ -58,7 +58,7 @@ const registerOrderSpareParts = async(sparePartData, id_orden) => {
  * @param {Number} serviceData.price Precio del servicio
  */
 const registerOrderService = async(serviceData, id_orden) => {
-    return await OrdenServicio.create({
+    return OrdenServicio.create({
         id_orden: id_orden,
         id_servicio: serviceData.id_service,
         precio: serviceData.price
@@ -75,7 +75,7 @@ const registerOrderService = async(serviceData, id_orden) => {
  * @param {number} id_orden - El identificador de la orden.
  */
 const registerOrderObservation = async (observations, id_orden) => {
-    return await Observacion.create({
+    return Observacion.create({
         id_orden: id_orden,
         observacion: observations
     });
@@ -88,7 +88,7 @@ const registerOrderObservation = async (observations, id_orden) => {
  * @param {number} id_orden - El identificador de la orden.
  */
 const registerOrderPhoto = async (photo, id_orden) => {
-    return await OrdenFoto.create({
+    return OrdenFoto.create({
         id_orden: id_orden,
         url: photo.path
     });
@@ -99,7 +99,7 @@ const registerOrderPhoto = async (photo, id_orden) => {
  * @returns {Array} Lista de ordenes
  * */
 const getAllOrders = async () => {
-    return await Orden.findAll({
+    return Orden.findAll({
         include: [
             { model: OrdenServicio, as: 'servicios' },
             { model: OrdenRepuesto, as: 'repuestos' },
