@@ -27,7 +27,7 @@ const Orden = sequelize.define('Orden', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  kilometraje: { 
+  kilometraje: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -44,7 +44,7 @@ const Orden = sequelize.define('Orden', {
     allowNull: true,
   },
   fecha_entrega_estimada: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: true,
   },
   id_prioridad: {

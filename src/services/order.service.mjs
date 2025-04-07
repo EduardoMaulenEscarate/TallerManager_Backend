@@ -28,7 +28,7 @@ import path from 'path';
  * @param {Number} orderData.priority Prioridad de la orden
  * @param {Number} idUser Id del usuario que registra la orden
  * */
-const registerOrder = async ({ vehicle, kilometraje, admissionReason, diagnosis,  estimatedDelivery, priority, state}, idUser) => {
+const registerOrder = async ({ vehicle, kilometraje, admissionReason, diagnosis, estimatedDelivery, priority, state }, idUser) => {
     return Orden.create({
         creado_por: idUser,
         id_auto_cliente: vehicle,
@@ -51,7 +51,7 @@ const registerOrder = async ({ vehicle, kilometraje, admissionReason, diagnosis,
  * @param {Number} sparePartsData.quantity Cantidad de repuestos
  * @param {Number} sparePartsData.price Precio del repuesto
  * */
-const registerOrderSpareParts = async(sparePartData, id_orden) => {
+const registerOrderSpareParts = async (sparePartData, id_orden) => {
     return OrdenRepuesto.create({
         id_order: id_orden,
         id_repuesto: sparePartData.id_sparePart,
@@ -67,7 +67,7 @@ const registerOrderSpareParts = async(sparePartData, id_orden) => {
  * @param {Number} serviceData.service Id del servicio
  * @param {Number} serviceData.price Precio del servicio
  */
-const registerOrderService = async(serviceData, id_orden) => {
+const registerOrderService = async (serviceData, id_orden) => {
     return OrdenServicio.create({
         id_orden: id_orden,
         id_servicio: serviceData.id_service,
@@ -100,7 +100,7 @@ const registerOrderObservation = async (observations, id_orden) => {
 const registerOrderPhoto = async (photo, id_orden) => {
     return OrdenFoto.create({
         id_orden: id_orden,
-        url: photo.path
+        url: photo.filename
     });
 }
 
@@ -115,16 +115,20 @@ const getAllOrders = async (user) => {
         if (user.type == 'Administrador' || user.id_type == '1') {
             return Orden.findAll({
                 include: [
-                    { model: AutoCliente, as: 'autoCliente', 
+                    {
+                        model: AutoCliente, as: 'autoCliente',
                         include: [
                             { model: Cliente, as: 'cliente' },
                             { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
-                        ] },
-                    { model: OrdenServicio, as: 'servicios',
-                        include: [{ model: Servicio, as: 'servicio' }] 
+                        ]
                     },
-                    { model: OrdenRepuesto, as: 'repuestos',
-                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    {
+                        model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }]
+                    },
+                    {
+                        model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }]
                     },
                     { model: Observacion, as: 'observaciones' },
                     { model: OrdenFoto, as: 'fotos' },
@@ -133,23 +137,27 @@ const getAllOrders = async (user) => {
                 ],
                 order: [['fecha_ingreso', 'DESC']]
             });
-        }else if (user.type == 'Mecánico' || user.id_type == '2') {
+        } else if (user.type == 'Mecánico' || user.id_type == '2') {
             // Si el usuario es un mecanico, se obtienen las ordenes asignadas a el
             return Orden.findAll({
                 where: {
                     creado_por: user.id
                 },
                 include: [
-                    { model: AutoCliente, as: 'autoCliente', 
+                    {
+                        model: AutoCliente, as: 'autoCliente',
                         include: [
                             { model: Cliente, as: 'cliente' },
                             { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
-                        ] },
-                    { model: OrdenServicio, as: 'servicios',
-                        include: [{ model: Servicio, as: 'servicio' }] 
+                        ]
                     },
-                    { model: OrdenRepuesto, as: 'repuestos',
-                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    {
+                        model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }]
+                    },
+                    {
+                        model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }]
                     },
                     { model: Observacion, as: 'observaciones' },
                     { model: OrdenFoto, as: 'fotos' },
@@ -170,7 +178,7 @@ const getAllOrders = async (user) => {
  */
 const getOrderById = async (id, user) => {
     console.log(user);
-    
+
     try {
         // Si el usuarios es un administrador, puede ver cualquier orden
         if (user.type == 'Administrador' || user.id_type == '1') {
@@ -179,16 +187,20 @@ const getOrderById = async (id, user) => {
                     id: id
                 },
                 include: [
-                    { model: AutoCliente, as: 'autoCliente', 
+                    {
+                        model: AutoCliente, as: 'autoCliente',
                         include: [
                             { model: Cliente, as: 'cliente' },
                             { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
-                        ] },
-                    { model: OrdenServicio, as: 'servicios',
-                        include: [{ model: Servicio, as: 'servicio' }] 
+                        ]
                     },
-                    { model: OrdenRepuesto, as: 'repuestos',
-                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    {
+                        model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }]
+                    },
+                    {
+                        model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }]
                     },
                     { model: Observacion, as: 'observaciones' },
                     { model: OrdenFoto, as: 'fotos' },
@@ -196,7 +208,7 @@ const getOrderById = async (id, user) => {
                     { model: EstadoOrden, as: 'estadoOrden' },
                 ]
             });
-        }else if (user.type == 'Mecánico' || user.id_type == '2') {
+        } else if (user.type == 'Mecánico' || user.id_type == '2') {
             // Si el usuario es un mecanico, se obtienen la ordenen solo si está asignada a el
             return Orden.findOne({
                 where: {
@@ -204,16 +216,20 @@ const getOrderById = async (id, user) => {
                     creado_por: user.id
                 },
                 include: [
-                    { model: AutoCliente, as: 'autoCliente', 
+                    {
+                        model: AutoCliente, as: 'autoCliente',
                         include: [
                             { model: Cliente, as: 'cliente' },
                             { model: Auto, as: 'detalle', include: [{ model: Marca, as: 'marca_auto' }] }
-                        ] },
-                    { model: OrdenServicio, as: 'servicios',
-                        include: [{ model: Servicio, as: 'servicio' }] 
+                        ]
                     },
-                    { model: OrdenRepuesto, as: 'repuestos',
-                        include: [{ model: Repuesto, as: 'repuesto' }] 
+                    {
+                        model: OrdenServicio, as: 'servicios',
+                        include: [{ model: Servicio, as: 'servicio' }]
+                    },
+                    {
+                        model: OrdenRepuesto, as: 'repuestos',
+                        include: [{ model: Repuesto, as: 'repuesto' }]
                     },
                     { model: Observacion, as: 'observaciones' },
                     { model: OrdenFoto, as: 'fotos' },
@@ -242,8 +258,9 @@ const getOrderPhotos = async (photosPaths) => {
     const baseUrl = 'http://localhost:3000/uploads/order/';
     const photos = photosPaths
         .map(photo => ({
-            path: photo, // Path en la BD
-            url: `${baseUrl}${path.basename(photo)}` // Construir URL accesible
+            id: photo.id,
+            path: photo.url,
+            url: `${baseUrl}${path.basename(photo.url)}`
         }))
         .filter(photo => fs.existsSync(`public/uploads/order/${path.basename(photo.path)}`)); // Accede correctamente a 'path'
 
@@ -251,13 +268,44 @@ const getOrderPhotos = async (photosPaths) => {
 };
 
 
-export default { 
-    registerOrder, 
-    registerOrderSpareParts, 
-    registerOrderService, 
-    registerOrderObservation, 
-    registerOrderPhoto, 
-    getAllOrders, 
-    getOrderById, 
-    getOrderPhotos 
+const adaptOrderToFormFormat = (order, photos) => {
+    return {
+        client: order?.autoCliente?.cliente?.nombre || "",
+        orderVehicle: order?.autoCliente?.id || "",
+        estimatedDelivery: order?.fecha_entrega_estimada || "",
+        kilometraje: order?.kilometraje || "",
+        photos: [],
+        uploadedPhotos: photos || "",
+        priority: order?.id_prioridad || 2,
+        state: order?.id_estado || 1,
+        observations: order?.observaciones?.map(obs => obs.observacion).join(", ") || "",
+        spareParts: order?.repuestos?.map(rep => ({
+            sparePart: rep?.repuesto?.nombre || "",
+            quantity: rep?.cantidad || "",
+            price: rep?.precio_unitario || ""
+        })) || [{ sparePart: "", quantity: "", price: "" }],
+        services: order?.servicios?.map(serv => ({
+            service: serv?.servicio?.nombre || "",
+            price: serv?.precio || ""
+        })) || [{ service: "", price: "" }],
+        admissionReason: order?.motivo_ingreso || "",
+        diagnosis: order?.diagnostico || "",
+        totalSpareParts: order?.repuestos?.reduce((sum, rep) => sum + (rep.cantidad * rep.precio_unitario), 0) || 0,
+        totalServices: order?.servicios?.reduce((sum, serv) => sum + serv.precio, 0) || 0,
+        total: (order?.repuestos?.reduce((sum, rep) => sum + (rep.cantidad * rep.precio_unitario), 0) || 0) +
+            (order?.servicios?.reduce((sum, serv) => sum + serv.precio, 0) || 0)
+
+    };
+};
+
+export default {
+    adaptOrderToFormFormat,
+    registerOrder,
+    registerOrderSpareParts,
+    registerOrderService,
+    registerOrderObservation,
+    registerOrderPhoto,
+    getAllOrders,
+    getOrderById,
+    getOrderPhotos
 };

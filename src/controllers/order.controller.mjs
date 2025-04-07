@@ -20,19 +20,19 @@ const registerOrder = async (req, res) => {
     try {
         const { services, services_prices, spareParts, quantitys, spareParts_prices, observations } = req.body;
         const order = await service.registerOrder(req.body, req.user.id);
-        
+
         if (order && spareParts && spareParts.length > 0) {
-           await Promise.all(
+            await Promise.all(
                 spareParts.map((sparePart, index) => {
                     return service.registerOrderSpareParts(
                         {
                             id_sparePart: sparePart,
                             quantity: quantitys[index],
                             price: spareParts_prices[index]
-                        }, 
-                        order.id);        
+                        },
+                        order.id);
                 }
-            ));
+                ));
         }
 
         if (order) {
@@ -42,9 +42,9 @@ const registerOrder = async (req, res) => {
                         {
                             id_service: serviceForm,
                             price: services_prices[index]
-                        }, 
-                        order.id)           
-                }) 
+                        },
+                        order.id)
+                })
             );
         }
 
@@ -61,30 +61,30 @@ const registerOrder = async (req, res) => {
                 maxFileSize: 2 * 1024 * 1024, // 2MB
                 allowedFileTypes: ['jpg', 'png', 'jpeg']
             });
-    
+
             console.log('Archivos subidos:', uploadedPhotos);
-            
+
             if (uploadedPhotos && uploadedPhotos.length > 0) {
                 await Promise.all(
                     uploadedPhotos.map((photo) => {
                         return service.registerOrderPhoto(photo, order.id);
                     })
                 );
-                
+
             }
         }
-        
-        res.status(200).json({ 
+
+        res.status(200).json({
             message: 'Orden registrada exitosamente',
             order: order,
             status: 'success',
         });
 
-        
+
     } catch (error) {
         console.error('Error en registerOrder:', error);
         res.status(500).json({ message: error.message });
-    }    
+    }
 };
 
 
@@ -117,22 +117,23 @@ const getOrder = async (req, res) => {
     try {
         console.log('ID de la orden:', req.params.id);
         console.log('Usuario:', req.user);
-        
-        
+
+
         console.log(req.params.id);
-        const order = await service.getOrderById(req.params.id, req.user);
+        let order = await service.getOrderById(req.params.id, req.user);
 
         if (order) {
             // Obtener las fotos asociadas a la orden
-            const photos = await service.getOrderPhotos(order.fotos.map(photo => photo.url));
+            const photos = await service.getOrderPhotos(order.fotos.map(photo => ({ id: photo.id, url: photo.url })));
+            order = service.adaptOrderToFormFormat(order, photos);
 
-            return res.status(200).json({ 
-                status: 'success', 
-                message: 'Orden obtenida exitosamente', 
-                order, 
-                photos 
+            return res.status(200).json({
+                status: 'success',
+                message: 'Orden obtenida exitosamente',
+                order,
+                photos
             });
-        }else{
+        } else {
             return res.status(404).json({ status: 'error', message: 'Orden no encontrada' });
         }
     } catch (error) {
@@ -141,4 +142,4 @@ const getOrder = async (req, res) => {
     }
 }
 
-export { registerOrder,getAllOrders, getOrder };
+export { registerOrder, getAllOrders, getOrder };
