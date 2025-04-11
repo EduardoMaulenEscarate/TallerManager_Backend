@@ -177,7 +177,7 @@ const getAllOrders = async (user) => {
  * @param {number} id - El ID de la orden a buscar.
  */
 const getOrderById = async (id, user) => {
-    console.log(user);
+    console.log('user', user);
 
     try {
         // Si el usuarios es un administrador, puede ver cualquier orden
@@ -243,6 +243,56 @@ const getOrderById = async (id, user) => {
     }
 }
 
+const updateOrder = async(user, order, data) => {
+    order.kilometraje = data.kilometraje;
+    order.motivo_ingreso = data.admissionReason;
+    order.diagnostico = data.diagnosis;
+    order.fecha_entrega_estimada = data.estimatedDelivery;
+    order.id_prioridad = data.priority;
+    order.id_estado = data.state;
+
+    console.log('Actualizando orden con los siguientes datos:');
+    console.log('Kilometraje:', order.kilometraje);
+    console.log('Motivo de ingreso:', order.motivo_ingreso);
+    console.log('Diagnóstico:', order.diagnostico);
+    console.log('Fecha de entrega estimada:', order.fecha_entrega_estimada);
+    console.log('Prioridad:', order.id_prioridad);
+    console.log('Estado:', order.id_estado);
+
+    await order.save();
+
+    console.log(data.spareParts);
+    
+
+    // actualiza los repuestos
+    const spareParts = data.spareParts.map((sparePart, index) => ({
+        id_repuesto: sparePart,
+        cantidad: data.quantitys[index],
+        precio_unitario: data.spareParts_prices[index]
+    }));
+
+    const sparePartsIds = spareParts.map(sparePart => sparePart.id_repuesto);
+    const existingSpareParts = await OrdenRepuesto.findAll({
+        where: {
+            id_order: order.id,
+            id_repuesto: {
+                [Op.in]: sparePartsIds
+            }
+        }
+    });
+
+    const sparePartsToDelete = existingSpareParts.filter(existingSparePart => !sparePartsIds.includes(existingSparePart.id_repuesto));
+
+    console.log('sparePartsToDelete', sparePartsToDelete);
+    // await Promise.all(sparePartsToDelete.map(sparePart => sparePart.destroy()));
+
+}
+
+/** 
+ * Obtiene las fotos de una orden
+ * @param {Array} photosPaths - Array de rutas de fotos
+ * @returns {Array} - Array de objetos con id, path y url de las fotos 
+ */
 const getOrderPhotos = async (photosPaths) => {
     // Trae fotos desde public/uploads/order
     console.log(photosPaths);
@@ -267,7 +317,12 @@ const getOrderPhotos = async (photosPaths) => {
     return photos;
 };
 
-
+/**
+ * Convierte los datos de la orden a un formato adecuado para el formulario.
+ * @param {Object} order - Datos de la orden.
+ * @param {Array} photos - Array de fotos de la orden.
+ * @returns {Object} - Datos de la orden en formato de formulario. 
+ *  */
 const adaptOrderToFormFormat = (order, photos) => {
     return {
         client: order?.autoCliente?.cliente?.nombre || "",
@@ -280,12 +335,12 @@ const adaptOrderToFormFormat = (order, photos) => {
         state: order?.id_estado || 1,
         observations: order?.observaciones?.map(obs => obs.observacion).join(", ") || "",
         spareParts: order?.repuestos?.map(rep => ({
-            sparePart: rep?.repuesto?.nombre || "",
+            sparePart: rep?.repuesto?.id || "",
             quantity: rep?.cantidad || "",
             price: rep?.precio_unitario || ""
         })) || [{ sparePart: "", quantity: "", price: "" }],
         services: order?.servicios?.map(serv => ({
-            service: serv?.servicio?.nombre || "",
+            service: serv?.servicio?.id || "",
             price: serv?.precio || ""
         })) || [{ service: "", price: "" }],
         admissionReason: order?.motivo_ingreso || "",
@@ -307,5 +362,6 @@ export default {
     registerOrderPhoto,
     getAllOrders,
     getOrderById,
-    getOrderPhotos
+    getOrderPhotos,
+    updateOrder
 };

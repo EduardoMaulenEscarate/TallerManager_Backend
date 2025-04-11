@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { upload } from "../middlewares/upload.mjs";
 import authenticateToken from "../middlewares/authenticate.mjs";
-import { validateOrderForm } from "../middlewares/validations/order.validation.mjs";
+import { validateForm, extraFormValidationOnEdit } from "../middlewares/validations/order.validation.mjs";
 import { normalizer } from "../middlewares/normalizer.mjs";
-import { registerOrder, getAllOrders, getOrder } from "../controllers/order.controller.mjs";
+import { registerOrder, getAllOrders, getOrder, updateOrder } from "../controllers/order.controller.mjs";
 import express from 'express';
 import app from "../app.mjs";
 /**
@@ -16,11 +16,20 @@ router.post('/',
     authenticateToken,
     upload.array('photos'), 
     normalizer(["spareParts", "spareParts_prices", "quantitys", "services", "services_prices"]), 
-    validateOrderForm, 
+    validateForm, 
     registerOrder);
 
 router.get('/', authenticateToken, getAllOrders);
 router.get('/ver/:id', authenticateToken, getOrder);
+
+router.put('/:id',
+    authenticateToken,
+    upload.array('photos'), 
+    normalizer(["spareParts", "spareParts_prices", "quantitys", "services", "services_prices"]), 
+    validateForm,
+    extraFormValidationOnEdit, 
+    updateOrder);
+
 // router.delete('/:id', registerOrder);
 // router.get('/:id', registerOrder);
 

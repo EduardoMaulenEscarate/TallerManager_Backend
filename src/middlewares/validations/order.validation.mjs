@@ -1,5 +1,5 @@
 import * as val from '../../validators/global.validator.mjs';
-
+import service from '../../services/order.service.mjs';
 /**
  * @fileoverview Middleware de validaciones para el modulo de ordenes.
 */
@@ -20,29 +20,13 @@ import * as val from '../../validators/global.validator.mjs';
  * @param {string} req.body.observations Observaciones de la orden.
  * @returns {Object} Respuesta con el resultado de la validacion.
  *  * */
-const validateOrderForm = async (req, res, next) => {
+const validateForm = async (req, res, next) => {
     const { vehicle, priority, kilometraje, 
             estimatedDelivery,
             admissionReason, diagnosis, 
             spareParts, spareParts_prices, quantitys, 
             services, services_prices, state, observations} = req.body; 
 
-            console.log(
-                'vehicle:', vehicle, 
-                'priority:', priority, 
-                'kilometraje:', kilometraje, 
-                'estimatedDelivery:', estimatedDelivery,
-                'admissionReason:', admissionReason, 
-                'diagnosis:', diagnosis, 
-                'spareParts:', spareParts, 
-                'spareParts_prices:', spareParts_prices, 
-                'quantitys:', quantitys, 
-                'services:', services, 
-                'services_prices:', services_prices, 
-                'state:', state, 
-                'observations:', observations
-            );
-            
     const validations = [
         { value: vehicle, method: val.emptyField, args: ['Vehículo'], optional: false },
         { value: vehicle, method: val.isNumber, args: ['Vehículo'], optional: false },
@@ -87,7 +71,32 @@ const validateOrderForm = async (req, res, next) => {
 
     if (!result.isValid) { return res.status(400).json({ message: result.msg }); }
     
+    // Si la validación es exitosa, valida que los campos correspondientes existan en la base de datos
+    
     next();
 }
 
-export { validateOrderForm };
+const extraFormValidationOnEdit = async (req, res, next) => {
+    console.log(req.body);
+    
+    const { id } = req.params;
+    const { vehicle, priority, kilometraje, 
+        estimatedDelivery,
+        admissionReason, diagnosis, 
+        spareParts, spareParts_prices, quantitys, 
+        services, services_prices, state, observations} = req.body; 
+
+    // Valida que la orden exista
+    const order = await service.getOrderById(id, req.user);
+    if (!order) { return res.status(404).json({ message: 'Orden no encontrada' }); }
+
+    // Valida que el estado de la orden permita editarla
+
+    // Valida que el usuario tenga permisos para editarla
+
+    console.log('Pasa por validación extra');
+    req.order = order;
+    next();
+}
+
+export { validateForm, extraFormValidationOnEdit };

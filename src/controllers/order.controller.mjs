@@ -142,4 +142,14 @@ const getOrder = async (req, res) => {
     }
 }
 
-export { registerOrder, getAllOrders, getOrder };
+const updateOrder = async (req, res) => {
+    /* console.log('Usuario:', req.user);
+    
+    console.log('Orden a actualizar:', req.order);
+     */
+    console.log('Datos de la solicitud:', req.body);
+    await service.updateOrder(req.user, req.order, req.body);
+    res.status(200).json({ message: 'Orden actualizada exitosamente' });
+}
+
+export { registerOrder, getAllOrders, getOrder, updateOrder };
